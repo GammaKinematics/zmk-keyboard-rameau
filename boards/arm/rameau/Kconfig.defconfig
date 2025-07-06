@@ -1,0 +1,22 @@
+if BOARD_PRIM_BOARD
+
+config BOARD
+    default "prim_board"
+
+if USB_DEVICE_STACK
+
+config USB_DEVICE_VID
+    default 0x1D50
+
+config USB_DEVICE_PID
+    default 0x615E
+
+config USB_DEVICE_MANUFACTURER
+    default "PRIM Keyboards"
+
+config USB_DEVICE_PRODUCT
+    default "PRIM Board"
+
+endif # USB_DEVICE_STACK
+
+endif # BOARD_PRIM_BOARD

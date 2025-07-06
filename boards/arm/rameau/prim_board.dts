@@ -1,0 +1,57 @@
+/dts-v1/;
+#include <st/u0/stm32u073Xc.dtsi>
+#include <st/u0/stm32u073cctx-pinctrl.dtsi>
+#include <dt-bindings/zmk/matrix_transform.h>
+
+/ {
+    model = "PRIM Keyboard Board";
+    compatible = "prim,prim-board";
+
+    chosen {
+        zephyr,sram = &sram0;
+        zephyr,flash = &flash0;
+        zmk,kscan = &kscan0;
+        zmk,matrix_transform = &default_transform;
+    };
+
+    default_transform: keymap_transform_0 {
+        compatible = "zmk,matrix-transform";
+        columns = <3>;
+        rows = <3>;
+        map = <
+        RC(0,0) RC(0,1) RC(0,2)
+        RC(1,0) RC(1,1) RC(1,2)
+        RC(2,0) RC(2,1) RC(2,2)
+        >;
+    };
+
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        label = "KSCAN";
+        diode-direction = "col2row";
+
+        row-gpios
+        = <&gpioa 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // Row 1 (ADC1_IN4)
+        , <&gpiob 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // Row 2 (ADC1_IN9)
+        , <&gpiob 0 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // Row 3 (ADC1_IN8)
+        ;
+
+        col-gpios
+        = <&gpioa 9 GPIO_ACTIVE_HIGH>   // Col 1
+        , <&gpioa 15 GPIO_ACTIVE_HIGH>  // Col 2
+        , <&gpiob 3 GPIO_ACTIVE_HIGH>   // Col 3
+        ;
+    };
+};
+
+&usb {
+    pinctrl-0 = <&usb_dm_pa11 &usb_dp_pa12>;
+    pinctrl-names = "default";
+    status = "okay";
+};
+
+&rcc {
+    clock-frequency = <DT_FREQ_M(16)>;
+    ahb-prescaler = <1>;
+    apb1-prescaler = <1>;
+};

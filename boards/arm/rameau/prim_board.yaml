@@ -1,0 +1,17 @@
+identifier: prim_board
+name: PRIM Keyboard Board
+type: mcu
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+supported:
+  - gpio
+  - usb_device
+  - uart
+  - spi
+  - i2c
+  - adc
+  - counter
+  - flash
