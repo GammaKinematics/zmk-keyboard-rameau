@@ -4,8 +4,8 @@
 #include <dt-bindings/zmk/matrix_transform.h>
 
 / {
-    model = "PRIM Keyboard Board";
-    compatible = "prim,prim-board";
+    model = "Rameau Board";
+    compatible = "GK,rameau";
 
     chosen {
         zephyr,sram = &sram0;

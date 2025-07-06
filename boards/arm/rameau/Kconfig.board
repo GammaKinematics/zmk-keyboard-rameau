@@ -1,3 +1,3 @@
-config BOARD_PRIM_BOARD
-    bool "PRIM Keyboard Board"
+config BOARD_RAMEAU
+    bool "Rameau Keyboard Board"
     depends on SOC_STM32U073XX

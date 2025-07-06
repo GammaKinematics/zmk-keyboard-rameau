@@ -1,5 +1,5 @@
-identifier: prim_board
-name: PRIM Keyboard Board
+identifier: rameau
+name: Rameau Board
 type: mcu
 arch: arm
 toolchain:

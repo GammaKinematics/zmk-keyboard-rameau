@@ -1,7 +1,7 @@
-if BOARD_PRIM_BOARD
+if BOARD_RAMEAU
 
 config BOARD
-    default "prim_board"
+    default "rameau"
 
 if USB_DEVICE_STACK
 
@@ -12,11 +12,11 @@ config USB_DEVICE_PID
     default 0x615E
 
 config USB_DEVICE_MANUFACTURER
-    default "PRIM Keyboards"
+    default "GK Keyboards"
 
 config USB_DEVICE_PRODUCT
-    default "PRIM Board"
+    default "Rameau"
 
 endif # USB_DEVICE_STACK
 
-endif # BOARD_PRIM_BOARD
+endif # BOARD_RAMEAU
