@@ -2,8 +2,6 @@
 #include <st/u0/stm32u073Xc.dtsi>
 #include <st/u0/stm32u073cctx-pinctrl.dtsi>
 #include <dt-bindings/zmk/matrix_transform.h>
-#include <zephyr/dt-bindings/adc/adc.h>
-#include <zephyr/dt-bindings/adc/stm32l4_adc.h>
 
 / {
     model = "Rameau Board";
