@@ -51,33 +51,36 @@
         discovery-sample-rate-hz = <100>;
         
         // Map sense pins to ADC channels - sparse array matching matrix indices
-        adc-channels = <&adc1_ch8>, <&adc1_ch18>, <&adc1_ch17>;
+        io-channels = <&adc1 8>, <&adc1 18>, <&adc1 17>;
         
         // Pinctrl states: pinctrl-0 is default, pinctrl-N is for sense pin N
-        pinctrl-0 = <&gpio_mode>;      // Default: all pins in GPIO mode
-        pinctrl-1 = <&adc_sense1>;     // Sense pin 0 (PA4) in ADC mode
-        pinctrl-2 = <&adc_sense2>;     // Sense pin 1 (PB1) in ADC mode
-        pinctrl-3 = <&adc_sense3>;     // Sense pin 2 (PB0) in ADC mode
+        pinctrl-0 = <&pa4_gpio &pb1_gpio &pb0_gpio>;          // Default: all pins in GPIO mode
+        pinctrl-1 = <&adc1_in8_pa4 &pb1_gpio &pb0_gpio>;      // Sense pin 0 (PA4) in ADC mode
+        pinctrl-2 = <&pa4_gpio &adc1_in18_pb1 &pb0_gpio>;     // Sense pin 1 (PB1) in ADC mode
+        pinctrl-3 = <&pa4_gpio &pb1_gpio &adc1_in17_pb0>;     // Sense pin 2 (PB0) in ADC mode
         pinctrl-names = "default", "sense1", "sense2", "sense3";
     };
 };
 
 // Configure ADC1 with channels for hall effect sensing
 &adc1 {
+
     #address-cells = <1>;
     #size-cells = <0>;
     status = "okay";
-
-    st,adc-clock-source = <ASYNC>;  // Use ASYNC for flexibility
-    st,adc-prescaler = <4>;         // Prescaler value
-
-    //pinctrl-0 = <&adc1_in8_pa4 &adc1_in17_pb0 &adc1_in18_pb1>;
-    //pinctrl-names = "default";
-    //st,adc-clock-source = "SYNC";
+    
+    st,adc-clock-source = <SYNC>;  // or <ASYNC>
+    st,adc-prescaler = <4>;
+    st,adc-sequencer = <NOT_FULLY_CONFIGURABLE>;  // or <FULLY_CONFIGURABLE>
+    //st,adc-oversampler = <OVERSAMPLER_NONE>;    // or <OVERSAMPLER_MINIMAL> or <OVERSAMPLER_EXTENDED>
+    
+    pinctrl-0 = <&adc1_in8_pa4 &adc1_in17_pb0 &adc1_in18_pb1>;
+    pinctrl-names = "default";
     
     // PA4 - ADC1_IN8
-    adc1_ch8: channel@8 {
+    channel@8 {
         reg = <8>;
+        #io-channel-cells = <1>;
         zephyr,gain = "ADC_GAIN_1";
         zephyr,reference = "ADC_REF_INTERNAL";
         zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
@@ -85,8 +88,9 @@
     };
     
     // PB0 - ADC1_IN17  
-    adc1_ch17: channel@17 {
+    channel@17 {
         reg = <17>;
+        #io-channel-cells = <1>;
         zephyr,gain = "ADC_GAIN_1";
         zephyr,reference = "ADC_REF_INTERNAL";
         zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
@@ -94,63 +98,34 @@
     };
     
     // PB1 - ADC1_IN18
-    adc1_ch18: channel@18 {
+    channel@18 {
         reg = <18>;
+        #io-channel-cells = <1>;
         zephyr,gain = "ADC_GAIN_1";
         zephyr,reference = "ADC_REF_INTERNAL";
         zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
         zephyr,resolution = <12>;
     };
+    
 };
 
-// Setup pinctrl configurations
 &pinctrl {
-    // Combined GPIO mode for all ADC-capable sense pins
-    gpio_mode: gpio_mode {
-        group1 {
-            pinmux = <STM32_PINMUX('A', 4, GPIO)>,
-                    <STM32_PINMUX('B', 1, GPIO)>,
-                    <STM32_PINMUX('B', 0, GPIO)>;
-            bias-pull-down;
-        };
+    // Default state - PA4 as GPIO with pull-down
+    pa4_gpio: pa4-gpio {
+        pinmux = <STM32_PINMUX('A', 4, GPIO)>;
+        bias-pull-down;
     };
     
-    // Individual ADC modes for each sense pin (starting at 1)
-    // Only one pin switches to ADC at a time
-    adc_sense1: adc_sense1 {
-        group1 {
-            pinmux = <STM32_PINMUX('A', 4, ANALOG)>;  // Sense 1 to ADC
-            bias-disable;
-        };
-        group2 {
-            pinmux = <STM32_PINMUX('B', 1, GPIO)>,    // Others stay GPIO
-                     <STM32_PINMUX('B', 0, GPIO)>;
-            bias-pull-down;
-        };
+    // Default state - PB1 as GPIO with pull-down
+    pb1_gpio: pb1-gpio {
+        pinmux = <STM32_PINMUX('B', 1, GPIO)>;
+        bias-pull-down;
     };
     
-    adc_sense2: adc_sense2 {
-        group1 {
-            pinmux = <STM32_PINMUX('B', 1, ANALOG)>;  // Sense 2 to ADC
-            bias-disable;
-        };
-        group2 {
-            pinmux = <STM32_PINMUX('A', 4, GPIO)>,    // Others stay GPIO
-                     <STM32_PINMUX('B', 0, GPIO)>;
-            bias-pull-down;
-        };
-    };
-    
-    adc_sense3: adc_sense3 {
-        group1 {
-            pinmux = <STM32_PINMUX('B', 0, ANALOG)>;  // Sense 3 to ADC
-            bias-disable;
-        };
-        group2 {
-            pinmux = <STM32_PINMUX('A', 4, GPIO)>,    // Others stay GPIO
-                     <STM32_PINMUX('B', 1, GPIO)>;
-            bias-pull-down;
-        };
+    // Default state - PB0 as GPIO with pull-down
+    pb0_gpio: pb0-gpio {
+        pinmux = <STM32_PINMUX('B', 0, GPIO)>;
+        bias-pull-down;
     };
 };
 
