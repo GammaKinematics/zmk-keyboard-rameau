@@ -58,6 +58,7 @@
         pinctrl-1 = <&adc_sense1>;     // Sense pin 0 (PA4) in ADC mode
         pinctrl-2 = <&adc_sense2>;     // Sense pin 1 (PB1) in ADC mode
         pinctrl-3 = <&adc_sense3>;     // Sense pin 2 (PB0) in ADC mode
+        pinctrl-names = "default", "sense1", "sense2", "sense3";
     };
 };
 
@@ -66,6 +67,13 @@
     #address-cells = <1>;
     #size-cells = <0>;
     status = "okay";
+
+    st,adc-clock-source = <ASYNC>;  // Use ASYNC for flexibility
+    st,adc-prescaler = <4>;         // Prescaler value
+
+    //pinctrl-0 = <&adc1_in8_pa4 &adc1_in17_pb0 &adc1_in18_pb1>;
+    //pinctrl-names = "default";
+    //st,adc-clock-source = "SYNC";
     
     // PA4 - ADC1_IN8
     adc1_ch8: channel@8 {
@@ -74,7 +82,6 @@
         zephyr,reference = "ADC_REF_INTERNAL";
         zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
         zephyr,resolution = <12>;
-        // Note: No pinctrl here - managed by hall effect driver
     };
     
     // PB0 - ADC1_IN17  
@@ -96,13 +103,17 @@
     };
 };
 
+// Setup pinctrl configurations
 &pinctrl {
     // Combined GPIO mode for all ADC-capable sense pins
     gpio_mode: gpio_mode {
         group1 {
+            // No adc here
+        };
+        group2 {
             pinmux = <STM32_PINMUX('A', 4, GPIO)>,
-                     <STM32_PINMUX('B', 1, GPIO)>,
-                     <STM32_PINMUX('B', 0, GPIO)>;
+                    <STM32_PINMUX('B', 1, GPIO)>,
+                    <STM32_PINMUX('B', 0, GPIO)>;
             bias-pull-down;
         };
     };
@@ -112,6 +123,7 @@
     adc_sense1: adc_sense1 {
         group1 {
             pinmux = <STM32_PINMUX('A', 4, ANALOG)>;  // Sense 1 to ADC
+            bias-disable;
         };
         group2 {
             pinmux = <STM32_PINMUX('B', 1, GPIO)>,    // Others stay GPIO
@@ -123,6 +135,7 @@
     adc_sense2: adc_sense2 {
         group1 {
             pinmux = <STM32_PINMUX('B', 1, ANALOG)>;  // Sense 2 to ADC
+            bias-disable;
         };
         group2 {
             pinmux = <STM32_PINMUX('A', 4, GPIO)>,    // Others stay GPIO
@@ -134,6 +147,7 @@
     adc_sense3: adc_sense3 {
         group1 {
             pinmux = <STM32_PINMUX('B', 0, ANALOG)>;  // Sense 3 to ADC
+            bias-disable;
         };
         group2 {
             pinmux = <STM32_PINMUX('A', 4, GPIO)>,    // Others stay GPIO
