@@ -108,9 +108,6 @@
     // Combined GPIO mode for all ADC-capable sense pins
     gpio_mode: gpio_mode {
         group1 {
-            // No adc here
-        };
-        group2 {
             pinmux = <STM32_PINMUX('A', 4, GPIO)>,
                     <STM32_PINMUX('B', 1, GPIO)>,
                     <STM32_PINMUX('B', 0, GPIO)>;
