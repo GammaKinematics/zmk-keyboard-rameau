@@ -58,7 +58,7 @@
         pinctrl-1 = <&adc1_in8_pa4 &pb1_gpio &pb0_gpio>;      // Sense pin 0 (PA4) in ADC mode
         pinctrl-2 = <&pa4_gpio &adc1_in18_pb1 &pb0_gpio>;     // Sense pin 1 (PB1) in ADC mode
         pinctrl-3 = <&pa4_gpio &pb1_gpio &adc1_in17_pb0>;     // Sense pin 2 (PB0) in ADC mode
-        pinctrl-names = "default", "sense1", "sense2", "sense3";
+        pinctrl-names = "gpio", "sense1", "sense2", "sense3";
     };
 };
 
@@ -69,7 +69,7 @@
     #size-cells = <0>;
     status = "okay";
     
-    st,adc-clock-source = <SYNC>;  // or <ASYNC>
+    st,adc-clock-source = <ASYNC>;  // or <ASYNC>
     st,adc-prescaler = <4>;
     st,adc-sequencer = <NOT_FULLY_CONFIGURABLE>;  // or <FULLY_CONFIGURABLE>
     //st,adc-oversampler = <OVERSAMPLER_NONE>;    // or <OVERSAMPLER_MINIMAL> or <OVERSAMPLER_EXTENDED>
