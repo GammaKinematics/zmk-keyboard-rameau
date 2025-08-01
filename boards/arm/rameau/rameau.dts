@@ -13,6 +13,8 @@
         zmk,kscan = &kscan0;
         zmk,matrix_transform = &default_transform;
         zmk,hall-effect = &hall_effect_config;
+        zephyr,console = &usart2;
+        zephyr,shell-uart = &usart2;
     };
 
     default_transform: keymap_transform_0 {
@@ -127,6 +129,13 @@
         pinmux = <STM32_PINMUX('B', 0, GPIO)>;
         bias-pull-down;
     };
+};
+
+&usart2 {
+    pinctrl-0 = <&usart2_tx_pa2 &usart2_rx_pa3>;
+    pinctrl-names = "default";
+    current-speed = <115200>;
+    status = "okay";
 };
 
 &usb {
