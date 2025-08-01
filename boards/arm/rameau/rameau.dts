@@ -15,6 +15,7 @@
         zmk,hall-effect = &hall_effect_config;
         zephyr,console = &usart2;
         zephyr,shell-uart = &usart2;
+        zephyr,bt-hci = &bt_hci_uart;
     };
 
     default_transform: keymap_transform_0 {
@@ -61,6 +62,22 @@
         pinctrl-2 = <&pa4_gpio &adc1_in18_pb1 &pb0_gpio>;     // Sense pin 1 (PB1) in ADC mode
         pinctrl-3 = <&pa4_gpio &pb1_gpio &adc1_in17_pb0>;     // Sense pin 2 (PB0) in ADC mode
         pinctrl-names = "gpio", "sense1", "sense2", "sense3";
+    };
+
+    soc {
+        lpuart3: serial@40008c00 {
+            compatible = "st,stm32-lpuart", "st,stm32-uart";
+            reg = <0x40008c00 0x400>;
+            clocks = <&rcc STM32_CLOCK(APB1, 12U)>;
+            resets = <&rctl STM32_RESET(APB1L, 12U)>;
+            interrupts = <30 0>;
+            status = "disabled";
+            
+            bt_hci_uart: bt_hci_uart {
+                compatible = "zephyr,bt-hci-uart";
+                status = "okay";
+            };
+        };
     };
 };
 
@@ -135,6 +152,14 @@
     pinctrl-0 = <&usart2_tx_pa2 &usart2_rx_pa3>;
     pinctrl-names = "default";
     current-speed = <115200>;
+    status = "okay";
+};
+
+&lpuart3 {
+    pinctrl-0 = <&lpuart3_tx_pb6 &lpuart3_rx_pb7 &lpuart3_rts_pb4 &lpuart3_cts_pb5>;
+    pinctrl-names = "default";
+    current-speed = <115200>;
+    hw-flow-control;
     status = "okay";
 };
 
