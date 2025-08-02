@@ -16,6 +16,7 @@
         zephyr,console = &usart2;
         zephyr,shell-uart = &usart2;
         zephyr,bt-hci = &bt_hci_uart;
+        zephyr,bt-uart = &lpuart3;
     };
 
     default_transform: keymap_transform_0 {
